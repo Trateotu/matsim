@@ -38,6 +38,7 @@ import org.matsim.contrib.minibus.operator.POperators;
 import org.matsim.contrib.minibus.operator.SubsidyI;
 import org.matsim.contrib.minibus.operator.TimeProvider;
 import org.matsim.contrib.minibus.replanning.PStrategyManager;
+import org.matsim.contrib.minibus.routeDesignScoring.PRouteDesignScoringManager;
 import org.matsim.contrib.minibus.schedule.PStopsFactory;
 import org.matsim.contrib.minibus.scoring.OperatorCostCollectorHandler;
 import org.matsim.contrib.minibus.scoring.PScoreContainer;
@@ -78,6 +79,7 @@ public final class PBox implements POperators {
 	private final StageContainerCreator stageCollectorHandler;
 	private final OperatorCostCollectorHandler operatorCostCollectorHandler;
 	private final PStrategyManager strategyManager = new PStrategyManager();
+	private final PRouteDesignScoringManager routeDesignScoringManager = new PRouteDesignScoringManager();
 
 	private final TicketMachineI ticketMachine;
 	
@@ -183,7 +185,7 @@ public final class PBox implements POperators {
 
 		Map<Id<Vehicle>, PScoreContainer> driverId2ScoreMap = this.scorePlansHandler.getDriverId2ScoreMap();
 		for (Operator operator : this.operators) {
-			operator.score(driverId2ScoreMap, subsidy);
+			operator.score(driverId2ScoreMap, subsidy, routeDesignScoringManager);
 		}
 
 		// why is the following done twice (see notifyIterationstarts)?

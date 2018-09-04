@@ -30,6 +30,7 @@ import org.matsim.contrib.minibus.PConstants.OperatorState;
 import org.matsim.contrib.minibus.performance.PTransitLineMerger;
 import org.matsim.contrib.minibus.replanning.PStrategy;
 import org.matsim.contrib.minibus.replanning.PStrategyManager;
+import org.matsim.contrib.minibus.routeDesignScoring.PRouteDesignScoringManager;
 import org.matsim.contrib.minibus.routeProvider.PRouteProvider;
 import org.matsim.contrib.minibus.scoring.PScoreContainer;
 import org.matsim.pt.transitSchedule.api.TransitLine;
@@ -106,7 +107,7 @@ abstract class AbstractOperator implements Operator{
 	}
 
 	@Override
-	public void score(Map<Id<Vehicle>, PScoreContainer> pScores, SubsidyI subsidy) {
+	public void score(Map<Id<Vehicle>, PScoreContainer> pScores, SubsidyI subsidy, PRouteDesignScoringManager routeDesignScoringManger) {
 		this.setScoreLastIteration(this.getScore());
 		this.setScore(0);
 		
@@ -119,6 +120,12 @@ abstract class AbstractOperator implements Operator{
 				double subsidyAmount = subsidy.getSubsidy(pplanId);
 				double newPlanScore = subsidyAmount + plan.getScore();
 				plan.setScore(newPlanScore);
+			}
+			
+			if (routeDesignScoringManger.routeDesignScoringIsActive()) {
+				for (TransitRoute transitRoute: plan.getLine().getRoutes().values()) {
+					System.out.println(transitRoute.getStops());
+				}
 			}
 			
 			this.setScore(this.getScore() + plan.getScore());

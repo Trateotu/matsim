@@ -112,7 +112,7 @@ public final class PConfigGroup extends ConfigGroup{
 	private static final String PMODULE_PARAMETER = "ModuleParameter_";
 	
 	private static final String PSCORING_MODULE = "Scoring_Module_";
-	private static final String PSCORING_MODULE_PROBABILITY = "Scoring_ModuleProbability_";
+	private static final String PSCORING_MODULE_WEIGHT = "Scoring_ModuleWeight_";
 	private static final String PSCORING_MODULE_DISABLEINITERATION = "Scoring_ModuleDisableInIteration_";
 	private static final String PSCORING_MODULE_PARAMETER = "Scoring_ModuleParameter_";
 	
@@ -312,9 +312,9 @@ public final class PConfigGroup extends ConfigGroup{
 		} else if (key != null && key.startsWith(PSCORING_MODULE)) {
 			PScoringSettings scoringFunctions = getScoringSettings(Id.create(key.substring(PSCORING_MODULE.length()), PScoringSettings.class), true);
 			scoringFunctions.setModuleName(value);
-		} else if (key != null && key.startsWith(PSCORING_MODULE_PROBABILITY)) {
-			PScoringSettings scoringFunctions = getScoringSettings(Id.create(key.substring(PSCORING_MODULE_PROBABILITY.length()), PScoringSettings.class), true);
-			scoringFunctions.setProbability(Double.parseDouble(value));
+		} else if (key != null && key.startsWith(PSCORING_MODULE_WEIGHT)) {
+			PScoringSettings scoringFunctions = getScoringSettings(Id.create(key.substring(PSCORING_MODULE_WEIGHT.length()), PScoringSettings.class), true);
+			scoringFunctions.setWeight(Double.parseDouble(value));
 		} else if (key != null && key.startsWith(PSCORING_MODULE_DISABLEINITERATION)) {
 			PScoringSettings scoringFunctions = getScoringSettings(Id.create(key.substring(PSCORING_MODULE_DISABLEINITERATION.length()), PScoringSettings.class), true);
 			scoringFunctions.setDisableInIteration(Integer.parseInt(value));
@@ -394,7 +394,7 @@ public final class PConfigGroup extends ConfigGroup{
 		
 		for (Entry<Id<PScoringSettings>, PScoringSettings> entry : this.scoringFunctions.entrySet()) {
 			map.put(PSCORING_MODULE + entry.getKey().toString(), entry.getValue().getModuleName());
-			map.put(PSCORING_MODULE_PROBABILITY + entry.getKey().toString(), Double.toString(entry.getValue().getProbability()));
+			map.put(PSCORING_MODULE_WEIGHT + entry.getKey().toString(), Double.toString(entry.getValue().getWeight()));
 			map.put(PSCORING_MODULE_DISABLEINITERATION + entry.getKey().toString(), Integer.toString(entry.getValue().getDisableInIteration()));
 			map.put(PSCORING_MODULE_PARAMETER + entry.getKey().toString(), entry.getValue().getParametersAsString());
 		}
@@ -465,10 +465,10 @@ public final class PConfigGroup extends ConfigGroup{
 		}
 		
 		for (Entry<Id<PScoringSettings>, PScoringSettings>  entry : this.scoringFunctions.entrySet()) {
-			map.put(PSCORING_MODULE + entry.getKey().toString(), "name of strategy");
-			map.put(PSCORING_MODULE_PROBABILITY + entry.getKey().toString(), "probability that a strategy is applied to a given a plan. despite its name, this really is a ``weight''");
-			map.put(PSCORING_MODULE_DISABLEINITERATION + entry.getKey().toString(), "removes the strategy from the choice set at the beginning of the given iteration");
-			map.put(PSCORING_MODULE_PARAMETER + entry.getKey().toString(), "parameters of the strategy");
+			map.put(PSCORING_MODULE + entry.getKey().toString(), "name of scoring function");
+			map.put(PSCORING_MODULE_WEIGHT + entry.getKey().toString(), "weight of this penalty score");
+			map.put(PSCORING_MODULE_DISABLEINITERATION + entry.getKey().toString(), "removes the scoring function from the choice set at the beginning of the given iteration");
+			map.put(PSCORING_MODULE_PARAMETER + entry.getKey().toString(), "parameters of the scoring function");
 		}
 
 		return map;
@@ -797,7 +797,7 @@ public final class PConfigGroup extends ConfigGroup{
 	
 	public static class PScoringSettings{
 		private Id<PScoringSettings> id;
-		private double probability = -1.0;
+		private double weight = 0.0;
 		private int disableInIteration = -1;
 		private String moduleName = null;
 		private String[] parameters = null;
@@ -806,12 +806,12 @@ public final class PConfigGroup extends ConfigGroup{
 			this.id = id;
 		}
 
-		public void setProbability(final double probability) {
-			this.probability = probability;
+		public void setWeight(final double weight) {
+			this.weight = weight;
 		}
 
-		public double getProbability() {
-			return this.probability;
+		public double getWeight() {
+			return this.weight;
 		}
 
 		public void setDisableInIteration(int disableInIteration) {

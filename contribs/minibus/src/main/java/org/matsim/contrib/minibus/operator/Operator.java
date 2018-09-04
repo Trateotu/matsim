@@ -26,6 +26,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.contrib.minibus.PConstants.OperatorState;
 import org.matsim.contrib.minibus.replanning.PStrategy;
 import org.matsim.contrib.minibus.replanning.PStrategyManager;
+import org.matsim.contrib.minibus.routeDesignScoring.PRouteDesignScoringManager;
 import org.matsim.contrib.minibus.routeProvider.PRouteProvider;
 import org.matsim.contrib.minibus.scoring.PScoreContainer;
 import org.matsim.pt.transitSchedule.api.TransitLine;
@@ -40,7 +41,7 @@ public interface Operator {
 	
 	public boolean init(PRouteProvider pRouteProvider, PStrategy initialStrategy, int iteration, double initialBudget);
 	
-	public void score(Map<Id<Vehicle>, PScoreContainer> driverId2ScoreMap, SubsidyI subsidy);
+	public void score(Map<Id<Vehicle>, PScoreContainer> driverId2ScoreMap, SubsidyI subsidy, PRouteDesignScoringManager routeDesignScoringManger);
 	
 	public void replan(PStrategyManager pStrategyManager, int iteration);
 

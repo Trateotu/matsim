@@ -17,7 +17,7 @@
  *                                                                         *
  * *********************************************************************** */
 
-package org.matsim.contrib.minibus.scoring.routeDesign;
+package org.matsim.contrib.minibus.routeDesignScoring;
 
 import org.apache.log4j.Logger;
 import org.matsim.contrib.minibus.PConfigGroup;
@@ -47,7 +47,7 @@ public final class PRouteDesignScoringManager {
 	public void init(PConfigGroup pConfig, TimeProvider timeProvider) {
 		for (PScoringSettings settings : pConfig.getScoringSettings()) {
 			String classname = settings.getModuleName();
-			double rate = settings.getProbability();
+			double rate = settings.getWeight();
 			if (rate == 0.0) {
 				log.info("The following strategy has a weight set to zero. Will drop it. " + classname);
 				continue;
@@ -62,11 +62,13 @@ public final class PRouteDesignScoringManager {
 	private RouteDesignScoringFunction loadScoring(final String name, final PScoringSettings settings, TimeProvider timeProvider) {
 		RouteDesignScoringFunction scoringFunction = null;
 		
-//		if (name.equals(MaxRandomStartTimeAllocator.STRATEGY_NAME)) {
-//			strategy = new MaxRandomStartTimeAllocator(settings.getParametersAsArrayList());
-//		} else if (name.equals(MaxRandomEndTimeAllocator.STRATEGY_NAME)) {
-//			strategy = new MaxRandomEndTimeAllocator(settings.getParametersAsArrayList());
-//		}
+		if (name.equals(AreaBetweenStopsScoring.SCORING_NAME)) {
+			scoringFunction = new AreaBetweenStopsScoring(settings.getParametersAsArrayList());
+		} else if (name.equals(AreaBetweenNetworkLinksScoring.SCORING_NAME)) {
+			scoringFunction = new AreaBetweenNetworkLinksScoring(settings.getParametersAsArrayList());
+		} else if (name.equals(RouteLengthVsBeelineScoring.SCORING_NAME)) {
+			scoringFunction = new RouteLengthVsBeelineScoring(settings.getParametersAsArrayList());
+		}
 		
 		if (scoringFunction == null) {
 			log.error("Could not initialize scoringFunction named " + name);
@@ -91,6 +93,25 @@ public final class PRouteDesignScoringManager {
 			if (this.disableInIteration.get(i) == iteration) {
 				this.weights.set(i, 0.0);
 				this.scoringFunctions.set(i, null);
+			}
+		}
+	}
+	
+	public boolean routeDesignScoringIsActive() {
+		for (double weight: weights) {
+			if (weight != 0) {
+				return true;
+			}
+		}
+		// either no routeDesignScoring set in config or weight is 0, rendering it useless
+		return false;
+	}
+	
+	public getRouteDesignScoring(int iteration) {
+		
+		for (int i = 0; i < disableInIteration.size(); i++) {
+			if (disableInIteration >= iteration) {
+				
 			}
 		}
 	}
