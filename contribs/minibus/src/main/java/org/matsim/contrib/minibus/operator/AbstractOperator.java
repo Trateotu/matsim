@@ -19,11 +19,16 @@
 
 package org.matsim.contrib.minibus.operator;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 import org.apache.log4j.Logger;
+import org.geotools.geometry.jts.GeometryBuilder;
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.contrib.minibus.PConfigGroup;
 import org.matsim.contrib.minibus.PConstants.OperatorState;
@@ -33,8 +38,11 @@ import org.matsim.contrib.minibus.replanning.PStrategyManager;
 import org.matsim.contrib.minibus.routeDesignScoring.PRouteDesignScoringManager;
 import org.matsim.contrib.minibus.routeProvider.PRouteProvider;
 import org.matsim.contrib.minibus.scoring.PScoreContainer;
+import org.matsim.core.utils.geometry.CoordUtils;
+import org.matsim.core.utils.geometry.GeometryUtils;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
+import org.matsim.pt.transitSchedule.api.TransitRouteStop;
 import org.matsim.vehicles.Vehicle;
 
 /**
@@ -290,6 +298,20 @@ abstract class AbstractOperator implements Operator{
 		
 		plan.setScore(totalLineScore);
 		plan.setTripsServed(totalTripsServed);
+		
+		for ( TransitRoute route : plan.getLine().getRoutes().values() ) {
+			List<Coord> coords = new ArrayList<>() ;
+			for ( TransitRouteStop stop : route.getStops() ) {
+				coords.add( stop.getStopFacility().getCoord() ) ;
+			}
+			Polygon polygon = GeometryUtils.createGeotoolsPolygon( coords ) ;
+			
+			polygon.getArea() ;
+			
+			throw new RuntimeException("needs to be completed here to something meaningful") ;
+			
+		}
+		
 	}
 
 	double getScore() {
